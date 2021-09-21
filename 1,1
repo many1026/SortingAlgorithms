@@ -1,0 +1,185 @@
+Tarea EDA: Emilio R  
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package sorting_algorithms;
+
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
+/**
+ *
+ * @author mny_1026
+ */
+public class Sorting_Algorithms <T extends Comparable<T>> {
+     public void SelectionSort(T[] datos) {
+        int n = datos.length;
+        for(int i = 0; i < n - 1; i++) {
+            int min = i;
+            for(int j = i+1; j < n; j++)
+                if(datos[j].compareTo(datos[min]) < 0) 
+                    min = j;
+            swap(datos, min, i);
+        }
+    }
+    
+    public void swap(T[] datos, int in1, int in2) {
+        T temp = datos[in1];
+        datos[in1] = datos[in2];
+        datos[in2] = temp;
+    }
+    
+    public void InsertionSort(T[] datos) {
+        int limite;
+        for(int i = 0; i < datos.length - 1; i++) {
+            limite = i + 1;
+            while(limite > 0 && datos[limite].compareTo(datos[limite - 1]) < 0) {
+                swap(datos, limite, limite-1);
+                limite--;
+            }
+        }         
+    }
+    
+    public void QuickSort(T[] datos) {
+        QuickSort(datos, 0, datos.length - 1);
+    }
+    
+    public void QuickSort(T[] datos, int inicio, int fin) {
+        if(inicio < fin) {
+            int pivote = particion(datos, inicio, fin);
+            QuickSort(datos, inicio, pivote - 1);
+            QuickSort(datos, pivote + 1, fin);
+        }
+    }
+    
+    private int particion(T[] datos, int inicio, int fin) {
+        T pivote = datos[inicio];
+        int j = inicio - 1;
+        int k = fin + 1;
+        for(int i = inicio + 1; i <= fin; i++)
+            if(datos[i].compareTo(pivote) <= 0) {
+                j++;
+                swap(datos, j, i);
+            } else {
+                k--;
+                swap(datos, k, i);
+            }
+        return j+ 1;
+    }
+    
+    public void mergeSort(T[] datos) {
+        mergeSort(datos, 0, datos.length - 1);
+    }
+    
+    private void mergeSort(T[] datos, int inicio, int fin) {
+        if(inicio < fin) {
+            int mitad = (inicio+fin)/2;
+            mergeSort(datos, inicio, mitad);
+            mergeSort(datos, mitad + 1, fin);
+            merge(datos, mitad, inicio, fin);
+            
+        }
+    }
+    
+    public void merge(T[] datos, int step, int inicio, int fin) {
+        int i = inicio, j = step + 1, k = 0;
+        T[] temp = (T[])(new Comparable[fin - inicio + 1]);
+        while(i <= step && j <= fin) {
+            if(datos[i].compareTo(datos[j]) <= 0){
+                temp[k] = datos[i];
+                i++;
+            } else {
+                temp[k] = datos[j];
+                j++;
+            }
+            k++;
+        }
+        while(i <= step) {
+            temp[k] = datos[i];
+            k++;
+            i++;
+        }
+        while(j <= fin) {
+            temp[k] = datos[j];
+            k++;
+            j++;
+        }
+        
+        for(int m = inicio; m <= fin; m++)
+            datos[m] = temp[m - inicio];
+    }
+    
+    public void imprimir(T[] datos) {
+        for(int i = 0; i < datos.length; i++)
+            System.out.print(datos[i] + " ");
+    }    
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String[] args) {
+        // TODO code application logic here
+          // TODO code application logic here
+        Sorting_Algorithms sort = new Sorting_Algorithms<Integer>();
+        Integer[] datos = new Integer[50];
+        // vamos a declarar la funcion random para que nuestras pruebas consistan eb¿n varios arreglos llenos de numeros random y de lenghts randoms
+
+        Random rand=new Random();
+        
+        //Merge Sort iterativo
+        for(int i=0;i<datos.length;i++)
+            datos[i] = rand.nextInt(100);
+        long startTime = System.nanoTime();
+        sort.mergeSort(datos);
+        long endTime = System.nanoTime();
+        System.out.println("El tiempo de ejecución en nanosegundos para el merge sort iterativo fue: " + (endTime-startTime));
+        sort.imprimir(datos);
+        
+        //Merge Sort recursivo
+        for(int i=0;i<datos.length;i++)
+            datos[i] = rand.nextInt(100);
+        startTime = System.nanoTime();
+        sort.mergeSort(datos);
+        endTime = System.nanoTime();
+        System.out.println("\nEl tiempo de ejecución en nanosegundos para el merge sort recursivo fue: " + (endTime-startTime));
+        sort.imprimir(datos);
+        
+        for(int i=0;i<datos.length;i++)
+            datos[i] = rand.nextInt(100);
+        startTime = System.nanoTime();
+        sort.QuickSort(datos);
+        endTime = System.nanoTime();
+        System.out.println("\nEl tiempo de ejecución en nanosegundos para el quick sort fue: " + (endTime-startTime));
+        sort.imprimir(datos);
+        
+        
+        
+        //El caso más efectivo es el siguiente:
+        //nótese que, en este caso la estrcutura ya se encuentra ordenada
+        for(int i=0;i<datos.length;i++)
+            datos[i] = datos.length - i;
+     
+        sort.imprimir(datos);
+        startTime = System.nanoTime();
+        sort.mergeSort(datos);
+        endTime = System.nanoTime();
+        System.out.println("\nEl tiempo de ejecución en nanosegundos para el merge sort recursivo fue: " + (endTime-startTime));
+        sort.imprimir(datos);
+    
+        //El caso más tardado, ya que la estructura esta ordenada pero al revés
+        for(int i=0;i<datos.length;i++)
+            datos[i] = datos.length - i;
+        startTime = System.nanoTime();
+        sort.mergeSort(datos);
+        endTime = System.nanoTime();
+        System.out.println("\nEl tiempo de ejecución en nanosegundos para el merge sort recursivo fue: " + (endTime-startTime));
+        sort.imprimir(datos);
+    
+    
+    
+    
+    }
+    
+}
+
+
